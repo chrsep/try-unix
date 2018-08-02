@@ -1,0 +1,13 @@
+#!/usr/bin/tcsh
+if (-d w) then
+    if (a`ls -ld w | /usr/bin/cut -c4` == a-) then
+        echo "A 3 digit code is required"
+        echo -n "Enter it here: "
+        set ans="$<"
+        if ($ans == 869) then
+            chmod u+x w
+        else
+            echo Sorry, that combination is incorrect
+        endif
+    endif
+endif

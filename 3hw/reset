@@ -1,0 +1,40 @@
+#!/usr/bin/tcsh
+if (!(-e PC)) then
+    echo That operation is not applicable here.
+else if (!(-e .floppy)) then
+    sleep 2
+    echo "Boot sector not found"
+else
+    sleep 2
+    echo Current time is `date | cut -d" " -f5`
+    echo -n "Enter new time: "
+    $< >& ~/X
+    while (1 == 1)
+        echo -n "A> "
+        set input="$<"
+        set input=`echo $input | tr '[:lower:]' '[:upper:]'`
+        sleep 2
+        switch ("$input")
+            case DIR:
+                cat .dir
+                breaksw
+            case TYPE*:
+                switch (`echo $input | cut -d" " -f2`)
+                    case COMMAND.COM:
+                        echo "Cannot type binary files"
+                        breaksw
+                    case FOO.TXT:
+                        echo -e "\nThe combination is 869"
+                        breaksw
+                    default:
+                        echo File not found - `echo $input | cut -d" " -f2`
+                endsw
+                breaksw
+            case EXIT:
+                echo -e "\nYou power down the machine and step back. "
+                exit 0
+            default:
+                echo "Bad command or file name"
+        endsw
+    end
+endif

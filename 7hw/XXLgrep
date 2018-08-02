@@ -1,0 +1,110 @@
+#!/usr/bin/tcsh
+if ( 0 ) then
+:A;tA;N;s,\n,&,@;s/
+/{&}/g;s/\([{}]\)\1/\1/g;s/\({[^}\n]*\)\n/\1|\n/g;:Y;s/\(|\n[^}|\n]*\)\n/\1|\n/
+;tY;:B;/[{|]/{P;s/[^\n]*\n//};tB;bA
+endif
+
+set r = "[1;31m"
+set n = "[0m"
+set g = "[0;32m"
+set colon = "[1;36m:$n"
+
+echo "-M3" > pa7.tmp1
+
+foreach i (`seq $#`)
+  ./pa4b.csh $argv[$i]:q >& pa7.tmp2
+  cat pa7.tmp2 >> pa7.tmp1
+end
+
+cat pa7.tmp1| sed 's/^\(-[^-A-DMdefm]\{1,\}\)\([-A-DMdefm]\)/\1\n-\2/'>pa7.tmp2
+
+
+cat pa7.tmp2| sed '/-[-ABCDMdefm]$/{N;s/\n//}' > pa7.tmp3
+
+
+if ( `cat pa7.tmp3 | grep -c '\--help'` > 0 ) then
+  tail -18 I053040008.XXLgrep
+  exit
+else if ( `cat pa7.tmp3 | grep -c '\-[dD]'` > 0 ) then
+  sed -n 's/^\(-[Dd]\)/Error: this grep flag(s) is not supported by XLgrep: \1./p' < pa7.tmp3
+  exit 2
+else if ( `tail -1 pa7.tmp3 | grep -c '\-[-ABCDMdefm]$'` > 0 ) then
+  echo The `tail -1 pa7.tmp3` flag requires a value
+  exit 2
+endif
+
+
+@ MAXLINES = `tac pa7.tmp3 | sed -n 's/-M//;T;p;q'` - 1
+
+
+set F = `grep "^-[^-A-DMdefm]" pa7.tmp3 | tr -d "\n\-"`
+if ( $F =~ "*[JKNOQSWXYgjkpt]*" ) then
+  echo "Error: flag(s) $F unrecognized by grep:"\
+       "`echo $F|sed 's/[^JKNOQSWXYgjkpt]//g;s/./, -&/g'`"
+  exit 2
+else if ( $F =~ "*[DEFHILPRTUZbdlqrz]*") then
+  echo "Error: this grep flag(s) is not supported by XLgrep:"\
+       "`echo $F|sed 's/[^DEFHILPRTUZbdlqrz]//g;s/./, -&/g'`"
+  exit 2
+else if ( $F =~ "*n*") then
+  set LineNums
+endif
+
+
+sed '3\!d;s/@/'$MAXLINES'/' < I053040008.XXLgrep > pa7.tmpX
+
+
+switch ( `grep -c "^-e" pa7.tmp3` ) 
+  case 0:
+    if ( `sed '/^-/d;q' < pa7.tmp3` == "" ) then
+      echo "Error: You must supply a regular expression."
+      exit 2
+    endif
+    cat pa7.tmp3 | sed '/^[^-]/{s/^/-e/;:L;n;bL}' > pa7.tmp4
+    mv pa7.tmp4 pa7.tmp3
+  case 1:
+    cat pa7.tmp3 | sed -n 's/^-e//;T;s/\\/%/g;p' | sed -f pa6.sed >> pa7.tmpX
+    breaksw
+  default:
+    echo "Error: XLgrep does not allow multiple regular expressions."
+    exit 2
+endsw
+
+
+sed '4,5\!d' < I053040008.XXLgrep >> pa7.tmpX
+
+cat pa7.tmpX | tr -d '\n' > pa7.sed
+
+set filename = `sed -n '/^[^-]/p;s/^-f//p' pa7.tmp3`
+
+if ( $#filename == 0 ) then
+  cat > tempfile.in
+  set filename = tempfile.in
+else if ( $#filename > 1 ) then
+  echo "Error: XLgrep does not allow multiple filenames."
+  exit 2
+endif
+
+
+seq $MAXLINES|tr -dc "\n" > pa7.tmp6
+cat $filename pa7.tmp6|sed -nf pa7.sed | sed `cat $filename | wc -l`q>pa7.tmp4
+
+
+set F = `sed '/^[^-]/d;/^-[efM]/d;G;s/\n/ /;h' < pa7.tmp3`
+
+grep $F -e "{[^}]*}"  -e "{[^}]*|" -e "^[^{}]*[}|]" < pa7.tmp4 > pa7.tmp5
+
+
+if ( `grep -c "^--color" pa7.tmp3` == 0 ) then
+  set r = $n:q; set colon = \:; set g = $n:q
+endif
+
+if ( $?LineNums ) then
+  cat pa7.tmp5 | sed ':A;/|$/{n;s,:,:'"$r,;bA}" | \
+                 sed "s/{/$r/g;s/}/$n/g;s/^\([0-9]*\):/$g\1$colon/g;s,|"\$,,
+else
+  cat pa7.tmp5 | sed "s/{/$r/g;s/}/$n/g;s,|"\$,,
+endif
+
+exit

@@ -1,0 +1,48 @@
+#!/usr/bin/tcsh
+if (!(-e ~/pa3/items/$1)) then
+    echo You don\'t have that
+    exit 0
+else if ($#argv != 3) then
+    echo You must supply an indirect object.
+    exit 0
+endif
+
+if ($1 == disk) set argv[1]=floppy
+if ($1 == life) set argv[1]=preserver
+
+switch ($3)
+    case PC:
+    case IBM:
+    case ibm:
+    case drive:
+    case computer:
+        set argv[3]=PC
+endsw
+
+if (!(-e $3 || -e ~/pa3/items/$3)) then
+    echo The indirect object is not here
+else if ($3 == urinal) then
+    echo You hear it plop down in some water below.
+    if ($1 == floopy || $1 == disk) mv ~/pa3/items/floppy ~/pa3/items/disk ~/pa3/holdtreasure
+    if ($1 == life || $1 == preserver) mv ~/pa3/items/life ~/pa3/items/preserver ~/pa3/holdtreasure
+    mv ~/pa3/items/$1 ~/pa3/holdtreasure >& ~/X
+else if ($3 == box) then
+    if ($1 == key) then
+        mv ~/pa3/items/key ~/pa3/holdkey
+        rm box
+        echo As you drop the key, the box begins to shake.  Finally it explodes
+        echo with a bang.  The key seems to have vanished\!
+    else
+        echo You can\'t put that in the box\!
+    endif
+else if ($3 == PC) then
+    if ($1 == floppy) then
+        mv ~/pa3/items/floppy ./.floppy
+        rm ~/pa3/items/disk
+    else
+        echo You can\'t put that in the PC\!
+    endif
+else
+    echo I don\'t know how to combine those objects.  Perhaps you should
+    echo just try dropping it.
+endif

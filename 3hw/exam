@@ -1,0 +1,9 @@
+#!/usr/bin/tcsh
+cp $1 ~/pa3/items/$1 ~/pa3 >& ~/X
+if (-e ~/pa3/$1 && $1 != "") then
+    set lines=`cat ~/pa3/$1 | wc -l | xargs expr -1 +`
+    tail -n $lines ~/pa3/$1
+    rm ~/pa3/$1
+else
+    echo "I cannot see that here."
+endif

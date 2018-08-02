@@ -1,0 +1,42 @@
+__1__:N
+__2__:/\({[^\}\n]*\)\n/\1|\n/
+__3__:#\(|\n[^\}\n]*\)\n#\1|\n#
+__4__:`seq $#argv`
+__5__:/^-\([^-ABCDdef]*\)\([-ABCDdef]\)/-\1\n-%\2/
+__6__:-v ^-$
+__7__:/%[ABCDdef]/&\n/
+__8__:.
+__9__:$? == 0
+_10_:/^[^-].*/P/
+_11_:/-%[dD]/D/
+_12_:/^-[^%].*/F/
+_13_:/-%-.*/L/
+_14_:/-%[ABCDdef]/A/
+__15__:`seq $#ArgTypes`
+__16__:tr -d '%'
+__17__:$ArgTypes[$i]
+__18__:tail -1 pa5.tmp4 | sed 's/^.//'
+__19__:tail -1 pa5.tmp4 | sed 's/-//g'
+__20__:@ onemorethani = $i + 1
+__21__:$#ArgTypes == $i
+__22__:"Error the `tail -1 pa5.tmp4 | sed 's/-//g'` flag requires a value"
+__23__:ArgTypes[$onemorethani]
+__24__:tail -2 pa5.tmp4 | tr '\n' ' ' | sed 's/.*/&\n/'
+__25__:-d '\n'
+__26__:'s/.*/-&/'
+__27__:"a$F" =~ "a[JKNOQSWXYgjkpt]*"
+__28__:"Error the `echo \"$F\" | sed 's/[^JKNOQSWXYgjkpt]//g;s/./&,/g;s/,$//'` flag is not supported by grep"
+__29__:"a$F" =~ "a[DEFHILPRTUZbdlqrz]*"
+__30__:"Error the `echo \"$F\" | sed 's/[^DEFHILPRTUZbdlqrz]//g;s/./&,/g;s/,$//'` flag is not supported by XLgrep"
+__31__:cat pa5.tmpE | wc -l
+__32__:"Error XLgrep doesn't support multiple regular expression"
+__33__:"`cat pa5.tmpP`" != ""
+__34__:0 - 1 +
+__35__:somevar
+__36__:`cat pa5.tmpF | wc -l`
+__37__:echo "$<\n$<\n$<\n$<\n$<\n$<" > tempfile.in
+__38__:anewvar
+__39__:("`cat pa5.tmpL`")
+__40__:"{[^}]*}"
+__41__:{[^|]*|
+__42__:^[^{}]*}

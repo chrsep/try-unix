@@ -1,0 +1,23 @@
+#!/usr/bin/tcsh
+if ($1 == all) then
+    if (-e towel) set towelPicked=1
+    mv ??[^midxburn]* ~/pa3/items >& ~/X && echo "You pick things up." ||\
+    ( ls ??[xumbird]* >& ~/X && echo "You cannot pick that up." ) || \
+    echo "There is nothing here to get."
+else if ( !(-e $1) ) then
+    echo "You cannot see that here."
+else if ( !($1 =~ ??[^midxburn]*) ) then
+    echo "You cannot pick that up."
+else
+    if ($1 ==  towel) set towelPicked=1
+    set content=`head -1 $1`
+    set files=`fgrep "$content" ??[^midxburn]* -l`
+    mv $files ~/pa3/items
+    echo You picked up the $files.
+endif
+
+if ( $?towelPicked) then
+    mv .d d
+    echo "Tacking the towel reveals a hole in the floor"
+    mv .hiddenhole _hiddenhole
+endif

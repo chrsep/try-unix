@@ -1,0 +1,11 @@
+#!/usr/bin/tcsh
+
+set chosenFile=~/pa3/items/$1
+if (-e $chosenFile) then
+    set content=`head -1 $chosenFile`
+    set files=`fgrep "$content" ~/pa3/items/* -l`
+    mv $files .
+    echo Dropped.
+else
+    echo You are not holding that.
+endif

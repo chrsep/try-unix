@@ -1,0 +1,18 @@
+#!/usr/bin/tcsh
+if (!(-e ~/pa3/items/axe)) then
+    echo "You have nothing with which to break things"
+else if ($1 == "") then
+    echo "You must supply an object"
+else if (!(-e $1)) then
+    echo "I don't see that here"
+else if ($1 != cable) then
+    echo "Your axe shatters into a million pieces"
+    rm ~/pa3/items/axe
+else
+    echo "As you break the ethernet cable, everything starts to blur.  You collapse"
+    echo "for a moment, then straighten yourself up."
+    echo
+    echo "Connection Closed"
+    echo
+    echo "Congratulations. You finished the level."
+endif
